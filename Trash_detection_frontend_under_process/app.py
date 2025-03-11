@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.secret_key = "supersecretkey"  # Needed for session management
 
 # Configure Gemini API securely using environment variables
-GEMINI_API_KEY = "AIzaSyCBD3QbPd5NIUvZ3CIiQpR8eYk-uRA38vY"
+GEMINI_API_KEY = os.getenv("AIzaSyCBD3QbPd5NIUvZ3CIiQpR8eYk-uRA38vY")
 genai.configure(api_key=GEMINI_API_KEY)
 model_gemini = genai.GenerativeModel("gemini-1.5-flash") # Renamed to avoid confusion with TF model
 
@@ -184,6 +184,7 @@ def chat():
         return jsonify({"error": f"API request failed: {str(e)}"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True,port=5001)
+    port = int(os.environ.get("PORT", 5001))  # Use Render's dynamic port or default to 5001
+    app.run(host="0.0.0.0", port=port)  # Bind to all interfaces
 
 # Removed Gradio Interface block as requested. It's not part of the Flask application logic.
